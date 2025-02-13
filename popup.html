@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsie McNews Headlines</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 15px;
+      width: 800px;
+      max-width: 800px; /* Ensures popup width is fixed */
+      box-sizing: border-box;
+    }
+    
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 10px 5px;
+      width: 150px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      transition: background 0.3s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      margin-top: 20px;
+      color: #444;
+    }
+
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap; /* Enables content wrapping */
+      word-wrap: break-word;
+      overflow-x: hidden; /* Prevents horizontal scrolling */
+      overflow-y: auto; /* Allows scrolling when needed */
+      max-width: 95%; /* Ensures it does not exceed the popup width */
+      max-height: 400px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <h2>Newsie McNews Headlines Extractor</h2>
+  
+  <div class="button-container">
+    <button id="extract">Extract Data</button>
+    <button id="copy">Copy to Clipboard</button>
+  </div>
+  
+  <h3>Results:</h3>
+  <pre id="output">Press "Extract Data" to fetch content.</pre>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
