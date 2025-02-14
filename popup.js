@@ -4,25 +4,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const extractBtn = document.getElementById("extract");
     const copyBtn = document.getElementById("copy");
     const output = document.getElementById("output");
+    const maxArticlesInput = document.getElementById("maxArticles");
 
-    // Function to extract data from the active tab
     extractBtn.addEventListener("click", async () => {
         extractBtn.textContent = "Extracting...";
-        extractBtn.disabled = true; // Prevent multiple clicks
+        extractBtn.disabled = true;
 
-        // Get the active tab
+        const maxArticles = parseInt(maxArticlesInput.value, 10) || 10; // Default to 10 if empty
+
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-        // Send a message to the content script
-        chrome.tabs.sendMessage(tab.id, { command: "extractData" }, (response) => {
+        chrome.tabs.sendMessage(tab.id, { command: "extractData", maxArticles: maxArticles }, (response) => {
             if (response) {
-                extractedData = response; // Store the extracted data
-                output.textContent = JSON.stringify(response, null, 2); // Display formatted JSON
+                extractedData = response;
+                output.textContent = JSON.stringify(response, null, 2);
             } else {
                 output.textContent = "Failed to extract data.";
             }
 
-            // Restore button state after 1 second
             setTimeout(() => {
                 extractBtn.textContent = "Extract Data";
                 extractBtn.disabled = false;
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Function to copy extracted data to the clipboard in JSON format
     copyBtn.addEventListener("click", () => {
         if (extractedData) {
             const jsonString = JSON.stringify(extractedData, null, 2);
@@ -38,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 copyBtn.textContent = "Copied!";
                 copyBtn.disabled = true;
 
-                // Restore button text after 1.5 seconds
                 setTimeout(() => {
                     copyBtn.textContent = "Copy to Clipboard";
                     copyBtn.disabled = false;
