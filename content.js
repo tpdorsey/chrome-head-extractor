@@ -75,6 +75,41 @@ function extractWsjHeadlines(maxArticles = 10) {
     return articles;
 }
 
+// Function to extract WaPo Headlines with maxArticles limit
+function extractWapoHeadlines(maxArticles = 10) {
+    const outletName = "Washington Post";
+    const storyDivs = document.querySelectorAll('div[data-feature-id="homepage/story"]');
+    
+    // Prepare an array to hold our result objects
+    const articles = [];
+  
+    // Loop through the divs and add only those with an <h2>, stopping after 10 valid items
+    for (let i = 0; i < storyDivs.length && articles.length < maxArticles; i++) {
+        const div = storyDivs[i];
+        
+        // Get the first h2 element inside the div; skip this div if none exists
+        const h2Elem = div.querySelector('h2');
+        if (!h2Elem) continue;
+        
+        // Get the first a element inside the div
+        const aElem = div.querySelector('a');
+        
+        // Get the div with class "font-size-blurb", if it exists
+        const blurbElem = div.querySelector('div.font-size-blurb');
+
+        articles.push({
+            id: articles.length + 1,
+            outlet: outletName,
+            href: aElem ? aElem.href : "",
+            headline: h2Elem.innerText.trim(),
+            blurb: blurbElem ? blurbElem.innerText.trim() : "",
+            category: ""
+        });
+    }
+
+    return articles;
+}
+
 // Function to extract data based on domain with maxArticles option
 function extractHeadlineData(maxArticles = 10) {
     const url = window.location.href;
@@ -95,6 +130,14 @@ function extractHeadlineData(maxArticles = 10) {
             url: url,
             extracted: extractedTime,
             articles: extractWsjHeadlines(maxArticles)
+        };
+    } else if (url.includes("washingtonpost.com")) {
+        return {
+            source: "The Washington Post",
+            slug: "wapo",
+            url: url,
+            extracted: extractedTime,
+            articles: extractWapoHeadlines(maxArticles)
         };
     }
 
