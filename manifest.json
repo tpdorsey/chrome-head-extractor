@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Newsie McNews Headlines",
-    "version": "0.4",
+    "version": "0.5",
     "description": "Extracts the first X headlines from supported news outlets (default 10).",
     "permissions": ["activeTab", "scripting"],
     "host_permissions": ["<all_urls>"],

@@ -172,6 +172,43 @@ function extractFoxNewsHeadlines(maxArticles = 10) {
     return articles;
 }
 
+// Function to extract NBC News Headlines with maxArticles limit
+function extractNbcHeadlines(maxArticles = 10) {
+    const outletName = "NBC News";
+    const storyDivs = document.querySelectorAll("h2 a, h3 a, .liveblog-layout__container-top a, .related-content-tease a");
+    const articles = [];
+    const seenHeadlines = new Set();
+
+    for (let i = 0; i < storyDivs.length && articles.length < maxArticles; i++) {
+        const link = storyDivs[i];
+        let headlineText = "";
+        
+        // For live stories, the headline might be nested in an h2 inside the anchor.
+        const nestedH2 = link.querySelector("h2");
+        if (nestedH2 && nestedH2.textContent.trim()) {
+          headlineText = nestedH2.textContent.trim();
+        } else {
+          // Otherwise, take the text of the anchor itself.
+          headlineText = link.textContent.trim();
+        }
+        
+        // Skip empty headlines or duplicates.
+        if (!headlineText || seenHeadlines.has(headlineText)) continue;
+        seenHeadlines.add(headlineText);
+
+        articles.push({
+            id: articles.length + 1,
+            outlet: outletName,
+            href: link.href,
+            headline: headlineText,
+            blurb: "",
+            category: ""
+        });
+    }
+
+    return articles;
+}
+
 // Function to extract data based on domain with maxArticles option
 function extractHeadlineData(maxArticles = 10) {
     const url = window.location.href;
@@ -216,6 +253,14 @@ function extractHeadlineData(maxArticles = 10) {
             url: url,
             extracted: extractedTime,
             articles: extractFoxNewsHeadlines(maxArticles)
+        };
+    } else if (url.includes("nbcnews.com")) {
+        return {
+            source: "NBC News",
+            slug: "nbc",
+            url: url,
+            extracted: extractedTime,
+            articles: extractNbcHeadlines(maxArticles)
         };
     }
 
