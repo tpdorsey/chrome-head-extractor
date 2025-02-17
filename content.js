@@ -203,7 +203,7 @@ function extractHeadlineData(maxArticles = 10) {
         };
     } else if (url.includes("foxnews.com/politics")) {
         return {
-            source: "Fox News",
+            source: "Fox News (Politics)",
             slug: "foxp",
             url: url,
             extracted: extractedTime,
