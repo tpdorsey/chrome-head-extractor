@@ -110,6 +110,68 @@ function extractWapoHeadlines(maxArticles = 10) {
     return articles;
 }
 
+// Function to extract Fox News Politics Headlines with maxArticles limit
+function extractFoxPoliticsHeadlines(maxArticles = 10) {
+    const outletName = "Fox News";
+    const storyDivs = document.querySelectorAll('h2.title, h4.title');
+    const articles = [];
+
+    for (let i = 0; i < storyDivs.length && articles.length < maxArticles; i++) {
+        const div = storyDivs[i];
+        const aElem = div.querySelector('a');
+        if (!aElem) continue;
+
+        const href = aElem.getAttribute('href') || "";
+        // const headlineElem = div.querySelector('h2.title, h4.title');
+        // if (!headlineElem) continue;
+
+        // const headline = headlineElem.innerText.trim();
+        const headline = div.innerText.trim() || "";
+
+        articles.push({
+            id: articles.length + 1,
+            outlet: outletName,
+            href: href,
+            headline: headline,
+            blurb: "",
+            category: ""
+        });
+    }
+
+    return articles;
+}
+
+// Function to extract Fox News Politics Headlines with maxArticles limit
+function extractFoxNewsHeadlines(maxArticles = 10) {
+    const outletName = "Fox News";
+    const storyDivs = document.querySelectorAll('h3.title');
+    const articles = [];
+
+    for (let i = 0; i < storyDivs.length && articles.length < maxArticles; i++) {
+        const div = storyDivs[i];
+        const aElem = div.querySelector('a');
+        if (!aElem) continue;
+
+        const href = aElem.getAttribute('href') || "";
+        // const headlineElem = div.querySelector('h2.title, h4.title');
+        // if (!headlineElem) continue;
+
+        // const headline = headlineElem.innerText.trim();
+        const headline = div.innerText.trim() || "";
+
+        articles.push({
+            id: articles.length + 1,
+            outlet: outletName,
+            href: href,
+            headline: headline,
+            blurb: "",
+            category: ""
+        });
+    }
+
+    return articles;
+}
+
 // Function to extract data based on domain with maxArticles option
 function extractHeadlineData(maxArticles = 10) {
     const url = window.location.href;
@@ -138,6 +200,22 @@ function extractHeadlineData(maxArticles = 10) {
             url: url,
             extracted: extractedTime,
             articles: extractWapoHeadlines(maxArticles)
+        };
+    } else if (url.includes("foxnews.com/politics")) {
+        return {
+            source: "Fox News",
+            slug: "foxp",
+            url: url,
+            extracted: extractedTime,
+            articles: extractFoxPoliticsHeadlines(maxArticles)
+        };
+    } else if (url.includes("foxnews.com")) {
+        return {
+            source: "Fox News",
+            slug: "foxn",
+            url: url,
+            extracted: extractedTime,
+            articles: extractFoxNewsHeadlines(maxArticles)
         };
     }
 
