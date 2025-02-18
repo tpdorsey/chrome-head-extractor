@@ -209,6 +209,53 @@ function extractNbcHeadlines(maxArticles = 10) {
     return articles;
 }
 
+// Function to extract CNN Headlines with maxArticles limit
+function extractCnnHeadlines(maxArticles = 10) {
+    const outletName = "CNN";
+    const storyDivs = document.querySelectorAll("a.container__link");
+    const articles = [];
+    const seenHeadlines = new Set();
+
+    storyDivs.forEach(link => {
+        // Skip links that are inside a div with the class "product-zone"
+        if (link.closest("div.product-zone")) return;
+    
+        // Skip links that contain data-link-type="video"
+        if (link.getAttribute("data-link-type") === "video") return;
+        
+        // Skip links inside elements with class "container_lead-plus-headlines-with-images__left"
+        if (link.closest(".container_lead-plus-headlines-with-images__left")) return;
+    
+        if (articles.length >= maxArticles) return;
+        
+        // Extract headline from the nested <span class="container__headline-text">
+        const headlineSpan = link.querySelector("span.container__headline-text") || link.querySelector("h2");
+        if (!headlineSpan) return;
+        
+        const headlineText = headlineSpan.textContent.trim();
+        if (!headlineText || seenHeadlines.has(headlineText)) return;
+        
+        seenHeadlines.add(headlineText);
+        
+        // Extract the URL from the anchor tag
+        const href = link.href || "";
+        
+        // CNN does not use blurbs often, so set it to an empty string
+        // const blurb = "";
+
+        articles.push({
+            id: articles.length + 1,
+            outlet: outletName,
+            href: href,
+            headline: headlineText,
+            blurb: "",
+            category: ""
+        });
+    });
+
+    return articles;
+}
+
 // Function to extract data based on domain with maxArticles option
 function extractHeadlineData(maxArticles = 10) {
     const url = window.location.href;
@@ -261,6 +308,14 @@ function extractHeadlineData(maxArticles = 10) {
             url: url,
             extracted: extractedTime,
             articles: extractNbcHeadlines(maxArticles)
+        };
+    } else if (url.includes("cnn.com")) {
+        return {
+            source: "CNN",
+            slug: "cnn",
+            url: url,
+            extracted: extractedTime,
+            articles: extractCnnHeadlines(maxArticles)
         };
     }
 
